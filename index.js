@@ -41,8 +41,8 @@ function spawnNpmWithOutput(args, options) {
   });
 }
 
-async function packWithNpm({ sourceDir, targetDir, verbose }) {
-  const output = (await spawnNpmWithOutput(['pack', sourceDir], {
+async function packWithNpm({ packageSpec, targetDir, verbose }) {
+  const output = (await spawnNpmWithOutput(['pack', packageSpec], {
     cwd: targetDir,
     verbose
   })).trim().split(/\n/);
@@ -60,7 +60,7 @@ async function packWithNpm({ sourceDir, targetDir, verbose }) {
   }
 }
 
-async function publish({tag, branch, version, push, packOptions}, pack = packWithNpm) {
+async function publish({tag, branch, version, push, packageSpec, packOptions}, pack = packWithNpm) {
   if (!tag) {
     tag = `v${version}`;
   }
@@ -86,7 +86,7 @@ async function publish({tag, branch, version, push, packOptions}, pack = packWit
     }
 
     await pack(Object.assign({
-      sourceDir: process.cwd(),
+      packageSpec: packageSpec,
       targetDir: tmpDir,
     }, packOptions));
 
